@@ -5,6 +5,7 @@ const character = document.querySelector('#character');
 const block = document.querySelector('#block');
 const hole = document.querySelector('#hole');
 
+let score = 0;
 let isJumping = false;
 
 const clamp = (value, min, max) => {
@@ -23,9 +24,16 @@ setInterval(() => {
             25,
             474
         );
+        const holeTop = parseInt(window.getComputedStyle(hole).getPropertyValue('top'));
+        const blockLeft = parseInt(window.getComputedStyle(block).getPropertyValue('left'));
+        const invertedCharacterTop = -(500 - characterTop);
 
-        if (characterTop > 470) {
-            alert('You lose!');
+        const collision = (blockLeft < 25) && (blockLeft > -50) &&
+            ((invertedCharacterTop < holeTop) || (invertedCharacterTop > holeTop + 130));
+
+        if (characterTop > 470 || collision) {
+            alert(`You lose! Score: ${score}`);
+            score = 0;
             character.style.top = '100px';
         } else {
             character.style.top = `${characterTop + 3}px`;
@@ -58,4 +66,5 @@ const jump = () => {
 hole.addEventListener('animationiteration', () => {
     const random = -(Math.random() * 300 + 150);
     hole.style.top = `${random}px`;
+    score += 1;
 })
